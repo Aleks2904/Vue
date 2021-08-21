@@ -4,6 +4,7 @@
             v-for="product in products"
             :key="product.id"
             :product="product"
+            :colors="colors"
         />
     </ul>
 </template>
@@ -13,6 +14,6 @@ import porductItem from "@/components/porductItem";
 
 export default {
     components: { porductItem },
-    props: ["products"],
+    props: ["products", "colors"],
 };
 </script>

@@ -13,50 +13,22 @@
         <span class="catalog__price"> {{ product.price }} ₽ </span>
 
         <ul class="colors colors--black">
-            <li class="colors__item">
+            <li
+                class="colors__item"
+                v-for="(color, i) in colorProducts(colors, product)"
+                :key="color.colorId"
+            >
                 <label class="colors__label">
                     <input
                         class="colors__radio sr-only"
                         type="radio"
-                        value="#73B6EA"
-                        v-model="color"
+                        :value="i"
+                        v-model="startColor"
                     />
 
                     <span
                         class="colors__value"
-                        style="background-color: #73b6ea"
-                    />
-                </label>
-            </li>
-
-            <li class="colors__item">
-                <label class="colors__label">
-                    <input
-                        class="colors__radio sr-only"
-                        type="radio"
-                        value="#8BE000"
-                        v-model="color"
-                    />
-
-                    <span
-                        class="colors__value"
-                        style="background-color: #8be000"
-                    />
-                </label>
-            </li>
-
-            <li class="colors__item">
-                <label class="colors__label">
-                    <input
-                        class="colors__radio sr-only"
-                        type="radio"
-                        value="#222"
-                        v-model="color"
-                    />
-
-                    <span
-                        class="colors__value"
-                        style="background-color: #222"
+                        :style="{ backgroundColor: color.colorName }"
                     />
                 </label>
             </li>
@@ -66,12 +38,21 @@
 
 <script>
 export default {
+    props: ["product", "colors"],
     data() {
         return {
-            color: "#73B6EA",
+            startColor: 0,
         };
     },
-    props: ["product"],
+
+    methods: {
+        colorProducts(colors, product) {
+            let productColor = product.colorID;
+            return colors.filter(
+                (color) => productColor.indexOf(color.colorId) != -1
+            );
+        },
+    },
 };
 </script>
 

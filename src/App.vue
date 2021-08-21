@@ -4,9 +4,11 @@
             :priceMin.sync="priceMin"
             :priceMax.sync="priceMax"
             :sortId.sync="sortId"
+            :sortColor.sync="sortColor"
+            :arrColors="arrColors"
         ></porduct-sort>
         <section class="catalog">
-            <ProductList :products="product" />
+            <ProductList :products="product" :colors="arrColors" />
             <base-pagination
                 :pageAll="getAllPages"
                 :itemShow="productShow"
@@ -22,12 +24,12 @@ import ProductList from "./components/ProductList.vue";
 import BasePagination from "./components/basePagination.vue";
 import porductSort from "@/components/porductSort";
 import PorductSort from "./components/porductSort.vue";
+import arrColors from "@/data/sortColor";
 
 for (let pr in products) {
     const prod = products[pr];
     const newId = Math.random();
     products[pr].id = newId;
-    console.log(prod);
 }
 
 export default {
@@ -41,6 +43,8 @@ export default {
             priceMin: 0,
             priceMax: 0,
             sortId: 0,
+            sortColor: 0,
+            arrColors: arrColors,
         };
     },
     computed: {
@@ -62,6 +66,14 @@ export default {
             if (this.sortId > 0) {
                 filterProducts = filterProducts.filter(
                     (product) => product.categoryID === this.sortId
+                );
+            }
+
+            if (this.sortColor > 0) {
+                console.log(this.sortColor);
+
+                filterProducts = filterProducts.filter(
+                    (product) => product.colorID.indexOf(this.sortColor) != -1
                 );
             }
 

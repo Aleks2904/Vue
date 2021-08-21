@@ -51,106 +51,24 @@
             <fieldset class="form__block">
                 <legend class="form__legend">Цвет</legend>
                 <ul class="colors">
-                    <li class="colors__item">
+                    <li
+                        class="colors__item"
+                        v-for="color in arrColors"
+                        :key="color.colorId"
+                    >
                         <label class="colors__label">
                             <input
                                 class="colors__radio sr-only"
                                 type="radio"
-                                name="color"
-                                value="#73B6EA"
-                                checked=""
+                                :value="color.colorId"
+                                v-model="colors"
                             />
                             <span
                                 class="colors__value"
-                                style="background-color: #73b6ea"
+                                :style="{ backgroundColor: color.colorName }"
                             >
                             </span>
                         </label>
-                    </li>
-                    <li class="colors__item">
-                        <label class="colors__label">
-                            <input
-                                class="colors__radio sr-only"
-                                type="radio"
-                                name="color"
-                                value="#FFBE15"
-                            />
-                            <span
-                                class="colors__value"
-                                style="background-color: #ffbe15"
-                            >
-                            </span>
-                        </label>
-                    </li>
-                    <li class="colors__item">
-                        <label class="colors__label">
-                            <input
-                                class="colors__radio sr-only"
-                                type="radio"
-                                name="color"
-                                value="#939393" />
-                            <span
-                                class="colors__value"
-                                style="background-color: #939393"
-                            >
-                            </span
-                        ></label>
-                    </li>
-                    <li class="colors__item">
-                        <label class="colors__label">
-                            <input
-                                class="colors__radio sr-only"
-                                type="radio"
-                                name="color"
-                                value="#8BE000" />
-                            <span
-                                class="colors__value"
-                                style="background-color: #8be000"
-                            >
-                            </span
-                        ></label>
-                    </li>
-                    <li class="colors__item">
-                        <label class="colors__label">
-                            <input
-                                class="colors__radio sr-only"
-                                type="radio"
-                                name="color"
-                                value="#FF6B00" />
-                            <span
-                                class="colors__value"
-                                style="background-color: #ff6b00"
-                            >
-                            </span
-                        ></label>
-                    </li>
-                    <li class="colors__item">
-                        <label class="colors__label">
-                            <input
-                                class="colors__radio sr-only"
-                                type="radio"
-                                name="color"
-                                value="#FFF" />
-                            <span
-                                class="colors__value"
-                                style="background-color: #fff"
-                            >
-                            </span
-                        ></label>
-                    </li>
-                    <li class="colors__item">
-                        <label class="colors__label">
-                            <input
-                                class="colors__radio sr-only"
-                                type="radio"
-                                name="color"
-                                value="#000" />
-                            <span
-                                class="colors__value"
-                                style="background-color: #000"
-                            >
-                            </span
-                        ></label>
                     </li>
                 </ul>
             </fieldset>
@@ -265,12 +183,13 @@
 import sorts from "@/data/sort";
 
 export default {
-    props: ["priceMin", "priceMax", "sortId"],
+    props: ["priceMin", "priceMax", "sortId", "arrColors", "sortColor"],
     data() {
         return {
             dataSortID: 0,
             dataPriceMin: 0,
             dataPriceMax: 0,
+            colors: 0,
         };
     },
     computed: {
@@ -288,17 +207,22 @@ export default {
         sortId(value) {
             this.dataSortID = value;
         },
+        sortColor(value) {
+            this.colors = value;
+        },
     },
     methods: {
         submit() {
             this.$emit("update:priceMin", this.dataPriceMin);
             this.$emit("update:priceMax", this.dataPriceMax);
             this.$emit("update:sortId", this.dataSortID);
+            this.$emit("update:sortColor", this.colors);
         },
         reset() {
             this.$emit("update:priceMin", 0);
             this.$emit("update:priceMax", 0);
             this.$emit("update:sortId", 0);
+            this.$emit("update:sortColor", 0);
         },
     },
 };
