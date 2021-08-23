@@ -1,10 +1,10 @@
 <template>
     <div class="content__catalog">
         <porduct-sort
-            :priceMin.sync="priceMin"
-            :priceMax.sync="priceMax"
-            :sortId.sync="sortId"
-            :sortColor.sync="sortColor"
+            v-model:price-min="priceMin"
+            v-model:price-max="priceMax"
+            v-model:sort-id="sortId"
+            v-model:sort-color="sortColor"
             :arrColors="arrColors"
         ></porduct-sort>
         <section class="catalog">
@@ -12,7 +12,7 @@
             <base-pagination
                 :pageAll="getAllPages"
                 :itemShow="productShow"
-                :page.sync="page"
+                v-model:page="page"
             ></base-pagination>
         </section>
     </div>
@@ -22,7 +22,6 @@
 import products from "./data/products";
 import ProductList from "./components/ProductList.vue";
 import BasePagination from "./components/basePagination.vue";
-import porductSort from "@/components/porductSort";
 import PorductSort from "./components/porductSort.vue";
 import arrColors from "@/data/sortColor";
 
@@ -33,8 +32,7 @@ for (let pr in products) {
 }
 
 export default {
-    name: "App",
-    components: { ProductList, BasePagination, porductSort, PorductSort },
+    components: { ProductList, BasePagination, PorductSort },
     data() {
         return {
             page: 1,

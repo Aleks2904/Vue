@@ -183,7 +183,19 @@
 import sorts from "@/data/sort";
 
 export default {
-    props: ["priceMin", "priceMax", "sortId", "arrColors", "sortColor"],
+    props: {
+        priceMin: Number,
+        priceMax: Number,
+        sortId: Number,
+        sortColor: Number,
+        arrColors: Array,
+    },
+    emits: [
+        "update:priceMin",
+        "update:priceMax",
+        "update:sortId",
+        "update:sortColor",
+    ],
     data() {
         return {
             dataSortID: 0,
