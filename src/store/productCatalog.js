@@ -57,7 +57,6 @@ export const catalogStore = {
         },
         colorProductsItem: (state) => (product) => {
             let productColor = product.colorID;
-            console.log(productColor)
 
             return state.arrColors.filter(
                 (color) => productColor.indexOf(color.colorId) != -1

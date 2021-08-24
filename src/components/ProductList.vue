@@ -1,7 +1,7 @@
 <template>
     <ul class="catalog__list">
         <porduct-item
-            v-for="product in $store.state.product.products"
+            v-for="product in product"
             :key="product.id"
             :product="product"
         />
@@ -10,8 +10,14 @@
 
 <script>
 import porductItem from "@/components/porductItem";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
     components: { porductItem },
+    computed: {
+        ...mapGetters({
+            product: "product/product",
+        }),
+    },
 };
 </script>

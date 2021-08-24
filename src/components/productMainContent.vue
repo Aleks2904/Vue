@@ -6,20 +6,18 @@
         </div>
 
         <div class="content__catalog">
-            <!-- <porduct-sort
-                v-model:price-min="priceMin"
-                v-model:price-max="priceMax"
-                v-model:sort-id="sortId"
-                v-model:sort-color="sortColor"
-                :arrColors="arrColors"
-            ></porduct-sort> -->
+            <porduct-sort
+                :arrColors="$store.state.product.arrColors"
+            ></porduct-sort>
+
             <section class="catalog">
-                <ProductList :products="product" :colors="arrColors" />
-                <!-- <base-pagination
+                <ProductList />
+
+                <base-pagination
                     :pageAll="getAllPages"
                     :itemShow="productShow"
-                    v-model:page="page"
-                ></base-pagination> -->
+                    v-model:page="$store.state.productpage"
+                ></base-pagination>
             </section>
         </div>
     </main>

@@ -46,18 +46,10 @@ export default {
             startColor: 0,
         };
     },
-
-    methods: {
+    computed: {
         ...mapGetters({
             colorProducts: "product/colorProductsItem",
         }),
-
-        // colorProducts(colors, product) {
-        //     let productColor = product.colorID;
-        //     return colors.filter(
-        //         (color) => productColor.indexOf(color.colorId) != -1
-        //     );
-        // },
     },
 };
 </script>

@@ -181,21 +181,22 @@
 
 <script>
 import sorts from "@/data/sort";
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 
 export default {
-    props: {
-        priceMin: Number,
-        priceMax: Number,
-        sortId: Number,
-        sortColor: Number,
-        arrColors: Array,
-    },
-    emits: [
-        "update:priceMin",
-        "update:priceMax",
-        "update:sortId",
-        "update:sortColor",
-    ],
+    // props: {
+    //     priceMin: Number,
+    //     priceMax: Number,
+    //     sortId: Number,
+    //     sortColor: Number,
+    //     arrColors: Array,
+    // },
+    // emits: [
+    //     "update:priceMin",
+    //     "update:priceMax",
+    //     "update:sortId",
+    //     "update:sortColor",
+    // ],
     data() {
         return {
             dataSortID: 0,
@@ -208,6 +209,14 @@ export default {
         sort() {
             return sorts;
         },
+
+        ...mapState({
+            priceMin: (state) => state.product.priceMin,
+            priceMax: (state) => state.product.priceMax,
+            sortId: (state) => state.product.sortId,
+            sortColor: (state) => state.product.sortColor,
+            arrColors: (state) => state.product.arrColors,
+        }),
     },
     watch: {
         priceMin(value) {
@@ -225,17 +234,24 @@ export default {
     },
     methods: {
         submit() {
-            this.$emit("update:priceMin", this.dataPriceMin);
-            this.$emit("update:priceMax", this.dataPriceMax);
-            this.$emit("update:sortId", this.dataSortID);
-            this.$emit("update:sortColor", this.colors);
+            this.setPriceMin(this.dataPriceMin);
+            this.setPriceMax(this.dataPriceMax);
+            this.setSortId(this.dataSortID);
+            this.setSortColor(this.colors);
         },
         reset() {
-            this.$emit("update:priceMin", 0);
-            this.$emit("update:priceMax", 0);
-            this.$emit("update:sortId", 0);
-            this.$emit("update:sortColor", 0);
+            this.setPriceMin(0);
+            this.setPriceMax(0);
+            this.setSortId(0);
+            this.setSortColor(0);
         },
+
+        ...mapMutations({
+            setPriceMin: "product/setPriceMin",
+            setPriceMax: "product/setPriceMax",
+            setSortId: "product/setSortId",
+            setSortColor: "product/setSortColor",
+        }),
     },
 };
 </script>
