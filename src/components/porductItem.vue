@@ -1,13 +1,13 @@
 <template>
     <li class="catalog__item">
-        <a class="catalog__pic" href="#">
+        <router-link to="/item" class="catalog__pic">
             <img :src="product.img" :alt="product.title" />
-        </a>
+        </router-link>
 
         <h3 class="catalog__title">
-            <a href="#">
+            <router-link to="/item">
                 {{ product.title }}
-            </a>
+            </router-link>
         </h3>
 
         <span class="catalog__price"> {{ product.price }} ₽ </span>
@@ -15,7 +15,7 @@
         <ul class="colors colors--black">
             <li
                 class="colors__item"
-                v-for="(color, i) in colorProducts(colors, product)"
+                v-for="(color, i) in colorProducts(product)"
                 :key="color.colorId"
             >
                 <label class="colors__label">
@@ -37,8 +37,10 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
-    props: ["product", "colors"],
+    props: ["product"],
     data() {
         return {
             startColor: 0,
@@ -46,12 +48,16 @@ export default {
     },
 
     methods: {
-        colorProducts(colors, product) {
-            let productColor = product.colorID;
-            return colors.filter(
-                (color) => productColor.indexOf(color.colorId) != -1
-            );
-        },
+        ...mapGetters({
+            colorProducts: "product/colorProductsItem",
+        }),
+
+        // colorProducts(colors, product) {
+        //     let productColor = product.colorID;
+        //     return colors.filter(
+        //         (color) => productColor.indexOf(color.colorId) != -1
+        //     );
+        // },
     },
 };
 </script>
