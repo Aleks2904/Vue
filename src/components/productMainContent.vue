@@ -13,11 +13,7 @@
             <section class="catalog">
                 <ProductList />
 
-                <base-pagination
-                    :pageAll="getAllPages"
-                    :itemShow="productShow"
-                    v-model:page="$store.state.productpage"
-                ></base-pagination>
+                <base-pagination />
             </section>
         </div>
     </main>

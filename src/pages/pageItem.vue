@@ -3,16 +3,20 @@
         <div class="content__top">
             <ul class="breadcrumbs">
                 <li class="breadcrumbs__item">
-                    <a class="breadcrumbs__link" href="index.html"> Каталог </a>
+                    <router-link :to="'/'">
+                        <a class="breadcrumbs__link" href="#"> Каталог </a>
+                    </router-link>
                 </li>
                 <li class="breadcrumbs__item">
-                    <a class="breadcrumbs__link" href="#">
-                        Мобильный транспорт
-                    </a>
+                    <router-link :to="'/'">
+                        <a class="breadcrumbs__link" href="#">
+                            {{ category }}
+                        </a>
+                    </router-link>
                 </li>
                 <li class="breadcrumbs__item">
                     <a class="breadcrumbs__link">
-                        Смартфон Xiaomi Mi Mix 3 6/128GB
+                        {{ searcProduct().title }}
                     </a>
                 </li>
             </ul>
@@ -24,9 +28,8 @@
                     <img
                         width="570"
                         height="570"
-                        src="img/phone-square.jpg"
-                        srcset="img/phone-square@2x.jpg 2x"
-                        alt="Название товара"
+                        :src="searcProduct().img"
+                        :alt="searcProduct().title"
                     />
                 </div>
                 <ul class="pics__list">
@@ -35,9 +38,8 @@
                             <img
                                 width="98"
                                 height="98"
-                                src="img/phone-square-1.jpg"
-                                srcset="img/phone-square-1@2x.jpg 2x"
-                                alt="Название товара"
+                                :src="searcProduct().img"
+                                :alt="searcProduct().title"
                             />
                         </a>
                     </li>
@@ -46,9 +48,8 @@
                             <img
                                 width="98"
                                 height="98"
-                                src="img/phone-square-2.jpg"
-                                srcset="img/phone-square-2@2x.jpg 2x"
-                                alt="Название товара"
+                                :src="searcProduct().img"
+                                :alt="searcProduct().title"
                             />
                         </a>
                     </li>
@@ -57,9 +58,8 @@
                             <img
                                 width="98"
                                 height="98"
-                                src="img/phone-square-3.jpg"
-                                srcset="img/phone-square-3@2x.jpg 2x"
-                                alt="Название товара"
+                                :src="searcProduct().img"
+                                :alt="searcProduct().title"
                             />
                         </a>
                     </li>
@@ -68,9 +68,8 @@
                             <img
                                 width="98"
                                 height="98"
-                                src="img/phone-square-4.jpg"
-                                srcset="img/phone-square-4@2x.jpg 2x"
-                                alt="Название товара"
+                                :src="searcProduct().img"
+                                :alt="searcProduct().title"
                             />
                         </a>
                     </li>
@@ -78,59 +77,42 @@
             </div>
 
             <div class="item__info">
-                <span class="item__code">Артикул: {{ $route.params.id }}</span>
-                <h2 class="item__title">Смартфон Xiaomi Mi Mix 3 6/128GB</h2>
+                <span class="item__code" @click="searcProduct"
+                    >Артикул: {{ $route.params.id }}</span
+                >
+                <h2 class="item__title">{{ searcProduct().title }}</h2>
                 <div class="item__form">
                     <form class="form" action="#" method="POST">
-                        <b class="item__price"> 18 990 ₽ </b>
+                        <b class="item__price">
+                            {{ searcProduct().price }} ₽
+                        </b>
 
                         <fieldset class="form__block">
                             <legend class="form__legend">Цвет:</legend>
                             <ul class="colors">
-                                <li class="colors__item">
+                                <li
+                                    class="colors__item"
+                                    v-for="(color, i) in colorProducts(
+                                        searcProduct()
+                                    )"
+                                    :key="color.colorId"
+                                >
                                     <label class="colors__label">
                                         <input
                                             class="colors__radio sr-only"
                                             type="radio"
-                                            name="color-item"
-                                            value="blue"
-                                            checked=""
+                                            :value="i"
+                                            v-model="startColor"
                                         />
+
                                         <span
                                             class="colors__value"
-                                            style="background-color: #73b6ea"
-                                        >
-                                        </span>
-                                    </label>
-                                </li>
-                                <li class="colors__item">
-                                    <label class="colors__label">
-                                        <input
-                                            class="colors__radio sr-only"
-                                            type="radio"
-                                            name="color-item"
-                                            value="yellow"
+                                            :style="{
+                                                backgroundColor:
+                                                    color.colorName,
+                                            }"
                                         />
-                                        <span
-                                            class="colors__value"
-                                            style="background-color: #ffbe15"
-                                        >
-                                        </span>
                                     </label>
-                                </li>
-                                <li class="colors__item">
-                                    <label class="colors__label">
-                                        <input
-                                            class="colors__radio sr-only"
-                                            type="radio"
-                                            name="color-item"
-                                            value="gray" />
-                                        <span
-                                            class="colors__value"
-                                            style="background-color: #939393"
-                                        >
-                                        </span
-                                    ></label>
                                 </li>
                             </ul>
                         </fieldset>
@@ -287,9 +269,39 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+import sorts from "@/data/sort";
 export default {
-    setup() {
-        return {};
+    data() {
+        return {
+            startColor: 0,
+        };
+    },
+    methods: {
+        searcProduct() {
+            const productID = this.$route.params.id;
+            const product = this.allProducts.filter(
+                (product) => product.id == productID
+            );
+
+            return product[0];
+        },
+    },
+    computed: {
+        ...mapState({
+            allProducts: (state) => state.product.products,
+        }),
+
+        category() {
+            const product = this.searcProduct();
+            const productCategory = sorts.filter(
+                (sort) => sort.id === product.categoryID
+            );
+            return productCategory[0].title;
+        },
+        ...mapGetters({
+            colorProducts: "product/colorProductsItem",
+        }),
     },
 };
 </script>

@@ -1,14 +1,14 @@
 <template>
     <li class="catalog__item">
-        <router-link to="/item" class="catalog__pic">
+        <router-link :to="'/item/' + product.id" class="catalog__pic">
             <img :src="product.img" :alt="product.title" />
         </router-link>
 
-        <h3 class="catalog__title">
-            <router-link to="/item">
+        <router-link :to="'/item/' + product.id">
+            <h3 class="catalog__title">
                 {{ product.title }}
-            </router-link>
-        </h3>
+            </h3>
+        </router-link>
 
         <span class="catalog__price"> {{ product.price }} ₽ </span>
 

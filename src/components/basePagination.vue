@@ -51,24 +51,37 @@
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
-    props: ["pageAll", "itemShow", "page"],
     methods: {
         pagination(page) {
-            this.$emit("update:page", page);
+            this.pageMutations(page);
         },
         nextPage() {
             if (this.itemPagitaion != this.page) {
-                this.$emit("update:page", this.page + 1);
+                this.pageMutations(this.page + 1);
             }
         },
         pastPage() {
             if (this.page > 1) {
-                this.$emit("update:page", this.page - 1);
+                this.pageMutations(this.page - 1);
             }
         },
+
+        ...mapMutations({
+            pageMutations: "product/setPage",
+        }),
     },
     computed: {
+        ...mapState({
+            itemShow: (state) => state.product.productShow,
+            page: (state) => state.product.page,
+        }),
+        ...mapGetters({
+            pageAll: "product/getAllPages",
+        }),
+
         itemPagitaion() {
             return Math.ceil(this.pageAll / this.itemShow);
         },

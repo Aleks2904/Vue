@@ -3,6 +3,7 @@ import arrColors from "@/data/sortColor";
 
 for (let pr in products) {
     const newId = Math.random();
+    console.log(products[pr].id)
     products[pr].id = newId;
 }
 
@@ -52,7 +53,7 @@ export const catalogStore = {
             const offset = (state.page - 1) * state.productShow;
             return getters.sortProducts.slice(offset, offset + state.productShow);
         },
-        getAllPages(getters) {
+        getAllPages(state, getters) {
             return getters.sortProducts.length;
         },
         colorProductsItem: (state) => (product) => {

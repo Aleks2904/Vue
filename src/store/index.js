@@ -6,9 +6,9 @@ import {
     catalogStore
 } from "@/store/productCatalog"
 
+
 export default createStore({
     modules: {
-        product: catalogStore
+        product: catalogStore,
     }
-
 })
