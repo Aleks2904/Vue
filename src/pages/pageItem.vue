@@ -173,6 +173,7 @@
                                 <button
                                     type="button"
                                     aria-label="Убрать один товар"
+                                    @click.prevent="quantityOfGoodsDecrement"
                                 >
                                     <svg
                                         width="12"
@@ -183,11 +184,12 @@
                                     </svg>
                                 </button>
 
-                                <input type="text" value="1" name="count" />
+                                <input type="text" :value="quantityOfGoods" />
 
                                 <button
                                     type="button"
                                     aria-label="Добавить один товар"
+                                    @click.prevent="quantityOfGoodsIncrement"
                                 >
                                     <svg
                                         width="12"
@@ -284,6 +286,7 @@ export default {
         return {
             startColor: 0,
             startImg: 0,
+            quantityOfGoods: 1,
         };
     },
     methods: {
@@ -299,6 +302,14 @@ export default {
         switchPictures(e) {
             const val = Number(e.currentTarget.getAttribute("value"));
             this.startImg = val;
+        },
+
+        quantityOfGoodsIncrement() {
+            this.quantityOfGoods += 1;
+        },
+
+        quantityOfGoodsDecrement() {
+            if (this.quantityOfGoods > 1) this.quantityOfGoods -= 1;
         },
     },
     computed: {

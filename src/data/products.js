@@ -72,6 +72,7 @@ export default [{
   },
   {
     img: 'img/ripstik.jpg',
+    otherAngles: ['img/1.jpg', 'img/2.jpg', 'img/3.jpg'],
     title: 'Роллерсёрф Razor RipStik Air Pro',
     price: 6690,
     categoryID: 3,
