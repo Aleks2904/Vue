@@ -7,13 +7,13 @@ import {
 } from 'vue-router';
 
 const routes = [{
+    name: 'main',
     path: '/',
     component: pageCatalog,
-    name: 'main',
 }, {
+    name: 'product',
     path: '/item/:id',
     component: pageItem,
-    name: 'product'
 }, ]
 
 const router = createRouter({
