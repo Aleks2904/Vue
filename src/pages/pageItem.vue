@@ -26,49 +26,57 @@
             <div class="item__pics pics">
                 <div class="pics__wrapper">
                     <img
+                        v-if="startImg == 0"
                         width="570"
                         height="570"
-                        :src="searcProduct().img"
+                        :src="'../' + searcProduct().img"
+                        :alt="searcProduct().title"
+                    />
+                    <img
+                        v-else
+                        width="570"
+                        height="570"
+                        :src="'../' + searcProduct().otherAngles[startImg - 1]"
                         :alt="searcProduct().title"
                     />
                 </div>
                 <ul class="pics__list">
-                    <li class="pics__item">
-                        <a href="" class="pics__link pics__link--current">
+                    <li class="pics__item" :key="0">
+                        <a
+                            href="#"
+                            class="pics__link"
+                            :class="{
+                                'pics__link--current': 0 == startImg,
+                            }"
+                            @click.prevent="switchPictures"
+                            :value="0"
+                        >
                             <img
                                 width="98"
                                 height="98"
-                                :src="searcProduct().img"
+                                :src="'../' + searcProduct().img"
                                 :alt="searcProduct().title"
                             />
                         </a>
                     </li>
-                    <li class="pics__item">
-                        <a href="" class="pics__link">
+                    <li
+                        class="pics__item"
+                        v-for="(img, i) in searcProduct().otherAngles"
+                        :key="i + 1"
+                    >
+                        <a
+                            href="#"
+                            class="pics__link"
+                            :class="{
+                                'pics__link--current': i + 1 == startImg,
+                            }"
+                            @click.prevent="switchPictures"
+                            :value="i + 1"
+                        >
                             <img
                                 width="98"
                                 height="98"
-                                :src="searcProduct().img"
-                                :alt="searcProduct().title"
-                            />
-                        </a>
-                    </li>
-                    <li class="pics__item">
-                        <a href="" class="pics__link">
-                            <img
-                                width="98"
-                                height="98"
-                                :src="searcProduct().img"
-                                :alt="searcProduct().title"
-                            />
-                        </a>
-                    </li>
-                    <li class="pics__item">
-                        <a class="pics__link" href="#">
-                            <img
-                                width="98"
-                                height="98"
-                                :src="searcProduct().img"
+                                :src="'../' + img"
                                 :alt="searcProduct().title"
                             />
                         </a>
@@ -275,6 +283,7 @@ export default {
     data() {
         return {
             startColor: 0,
+            startImg: 0,
         };
     },
     methods: {
@@ -285,6 +294,11 @@ export default {
             );
 
             return product[0];
+        },
+
+        switchPictures(e) {
+            const val = Number(e.currentTarget.getAttribute("value"));
+            this.startImg = val;
         },
     },
     computed: {
