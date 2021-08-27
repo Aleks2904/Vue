@@ -10,7 +10,9 @@
             </h3>
         </router-link>
 
-        <span class="catalog__price"> {{ product.price }} ₽ </span>
+        <span class="catalog__price">
+            {{ $filters.numberFormat(product.price) }} ₽
+        </span>
 
         <ul class="colors colors--black">
             <li

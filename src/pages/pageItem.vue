@@ -3,16 +3,12 @@
         <div class="content__top">
             <ul class="breadcrumbs">
                 <li class="breadcrumbs__item">
-                    <router-link :to="'/'">
-                        <a class="breadcrumbs__link" href="#"> Каталог </a>
-                    </router-link>
+                    <a class="breadcrumbs__link" href="/"> Каталог </a>
                 </li>
                 <li class="breadcrumbs__item">
-                    <router-link :to="'/'">
-                        <a class="breadcrumbs__link" href="#">
-                            {{ category }}
-                        </a>
-                    </router-link>
+                    <a class="breadcrumbs__link" href="/">
+                        {{ category }}
+                    </a>
                 </li>
                 <li class="breadcrumbs__item">
                     <a class="breadcrumbs__link">
@@ -92,7 +88,7 @@
                 <div class="item__form">
                     <form class="form" action="#" method="POST">
                         <b class="item__price">
-                            {{ searcProduct().price }} ₽
+                            {{ $filters.numberFormat(searcProduct().price) }} ₽
                         </b>
 
                         <fieldset class="form__block">

@@ -8,10 +8,12 @@ import {
 
 const routes = [{
     path: '/',
-    component: pageCatalog
+    component: pageCatalog,
+    name: 'main',
 }, {
     path: '/item/:id',
-    component: pageItem
+    component: pageItem,
+    name: 'product'
 }, ]
 
 const router = createRouter({
