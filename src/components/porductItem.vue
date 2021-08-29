@@ -1,19 +1,16 @@
 <template>
     <li class="catalog__item">
         <router-link
-            :src="product.img"
-            :alt="product.title"
             :to="{ name: 'product', params: { id: product.id } }"
-            tag="img"
             class="catalog__pic"
-        />
-
-        <router-link
-            tag="h3"
-            :to="{ name: 'product', params: { id: product.id } }"
-            class="catalog__title"
         >
-            {{ product.title }}
+            <img :src="product.img" :alt="product.title" />
+        </router-link>
+
+        <router-link :to="{ name: 'product', params: { id: product.id } }">
+            <h3 class="catalog__title">
+                {{ product.title }}
+            </h3>
         </router-link>
 
         <span class="catalog__price">
