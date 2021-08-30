@@ -1,5 +1,6 @@
 import pageCatalog from '@/pages/pageCatalog';
 import pageItem from '@/pages/pageItem';
+import pageError from '@/pages/pageError';
 
 import {
     createRouter,
@@ -14,7 +15,11 @@ const routes = [{
     name: 'product',
     path: '/item/:id',
     component: pageItem,
-}, ]
+}, {
+    name: 'pageError',
+    path: '/:pathMatch(.*)*',
+    component: pageError,
+}]
 
 const router = createRouter({
     routes,

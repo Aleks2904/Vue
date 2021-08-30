@@ -1,4 +1,5 @@
 <template>
+    <Header></Header>
     <main class="content container">
         <div class="content__top">
             <ul class="breadcrumbs">
@@ -280,12 +281,19 @@
             </div>
         </section>
     </main>
+    <Footer></Footer>
 </template>
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
 import sorts from "@/data/sort";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 export default {
+    components: {
+        Header,
+        Footer,
+    },
     data() {
         return {
             startColor: 0,
