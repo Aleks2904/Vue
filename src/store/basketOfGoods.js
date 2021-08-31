@@ -13,6 +13,9 @@ export const basketOfGoods = {
                     }
                 })
             }
+        },
+        removeGoods(state, item) {
+            state.goodsArr = state.goodsArr.filter(elem => elem.id !== item.id)
         }
     },
     namespaced: true,

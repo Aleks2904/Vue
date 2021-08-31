@@ -102,6 +102,7 @@
                                 class="product__del button-del"
                                 type="button"
                                 aria-label="Удалить товар из корзины"
+                                @click.prevent="removeGoods(item)"
                             >
                                 <svg width="20" height="20" fill="currentColor">
                                     <use xlink:href="#icon-close"></use>
@@ -145,7 +146,9 @@ export default {
         Footer,
     },
     data() {
-        return {};
+        return {
+            remove: {},
+        };
     },
     methods: {
         incrementGoods(item) {
@@ -156,6 +159,13 @@ export default {
                 item.quantityOfGoods -= 1;
             }
         },
+        removeGoods(item) {
+            this.remove = item;
+        },
+
+        ...mapMutations({
+            removeGoods: "basket/removeGoods",
+        }),
     },
 
     computed: {
@@ -167,7 +177,7 @@ export default {
         goods() {
             const goodsArr = this.goodsArr;
 
-            const arrProduct = [];
+            let arrProduct = [];
 
             this.products.map((item) => {
                 goodsArr.map((itemBasket) => {
