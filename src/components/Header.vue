@@ -16,26 +16,35 @@
                 8 800 600 90 09
             </a>
 
-            <a
+            <router-link
+                :to="{ name: 'basket' }"
                 class="header__cart"
                 href="cart.html"
-                aria-label="Корзина с товарами"
+                aria-label="Корзина с
+                товарами"
             >
                 <svg width="30" height="21" fill="currentColor">
                     <use xlink:href="#icon-cart"></use>
                 </svg>
-                <span class="header__count" aria-label="Количество товаров"
-                    >3</span
-                >
-            </a>
+                <span class="header__count" aria-label="Количество товаров">{{
+                    goods.length
+                }}</span>
+            </router-link>
         </div>
     </header>
 </template>
 
 <script>
+import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
     setup() {
         return {};
+    },
+    computed: {
+        ...mapState({
+            goods: (state) => state.basket.goodsArr,
+        }),
     },
 };
 </script>

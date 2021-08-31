@@ -3,7 +3,6 @@ import arrColors from "@/data/sortColor";
 
 for (let pr in products) {
     const newId = Math.random();
-    console.log(products[pr].id)
     products[pr].id = newId;
 }
 

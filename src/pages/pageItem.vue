@@ -34,14 +34,14 @@
                         v-if="startImg == 0"
                         width="570"
                         height="570"
-                        :src="'../' + searcProduct().img"
+                        :src="'/' + searcProduct().img"
                         :alt="searcProduct().title"
                     />
                     <img
                         v-else
                         width="570"
                         height="570"
-                        :src="'../' + searcProduct().otherAngles[startImg - 1]"
+                        :src="'/' + searcProduct().otherAngles[startImg - 1]"
                         :alt="searcProduct().title"
                     />
                 </div>
@@ -59,7 +59,7 @@
                             <img
                                 width="98"
                                 height="98"
-                                :src="'../' + searcProduct().img"
+                                :src="'/' + searcProduct().img"
                                 :alt="searcProduct().title"
                             />
                         </a>
@@ -81,7 +81,7 @@
                             <img
                                 width="98"
                                 height="98"
-                                :src="'../' + img"
+                                :src="'/' + img"
                                 :alt="searcProduct().title"
                             />
                         </a>
@@ -95,7 +95,12 @@
                 >
                 <h2 class="item__title">{{ searcProduct().title }}</h2>
                 <div class="item__form">
-                    <form class="form" action="#" method="POST">
+                    <form
+                        class="form"
+                        action="#"
+                        method="POST"
+                        @submit.prevent="submitGoods"
+                    >
                         <b class="item__price">
                             {{ $filters.numberFormat(searcProduct().price) }} ₽
                         </b>
@@ -322,6 +327,19 @@ export default {
 
         quantityOfGoodsDecrement() {
             if (this.quantityOfGoods > 1) this.quantityOfGoods -= 1;
+        },
+
+        ...mapMutations({
+            addGoods: "basket/setGoodsArr",
+        }),
+
+        submitGoods() {
+            const goods = {
+                id: Number(this.$route.params.id),
+                number: this.quantityOfGoods,
+            };
+
+            this.addGoods(goods);
         },
     },
     computed: {
