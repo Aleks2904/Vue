@@ -1,0 +1,1 @@
+export const store_URL = 'https://vue-study.skillbox.cc/api/';

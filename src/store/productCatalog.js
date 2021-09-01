@@ -1,71 +1,43 @@
-import products from "@/data/products";
-import arrColors from "@/data/sortColor";
-
-for (let pr in products) {
-    const newId = Math.random();
-    products[pr].id = newId;
-}
+import axios from "axios";
+import {
+    store_URL
+} from '@/axiosURL.js';
 
 export const catalogStore = {
     state: () => ({
+        //активная страница и всего страниц
         page: 1,
+        allPage: 0,
+        //сортировка
         priceMin: 0,
         priceMax: 0,
         sortId: 0,
         sortColor: 0,
-        products: products,
+        //список категорий и цветов для сортировки
+        listColor: [],
+        listSort: [],
+        //список товары и колличество отображаймых
+        products: [],
         productShow: 3,
-        arrColors: arrColors
+        //состояния загрузки и ошибки при получении товаров
+        loadingProduct: false,
+        loadingProductError: false,
     }),
-    getters: {
-        sortProducts(state) {
-            let filterProducts = state.products;
-
-            if (state.priceMin > 0) {
-                filterProducts = filterProducts.filter(
-                    (product) => product.price > state.priceMin
-                );
-            }
-
-            if (state.priceMax > 0) {
-                filterProducts = filterProducts.filter(
-                    (product) => product.price < state.priceMax
-                );
-            }
-
-            if (state.sortId > 0) {
-                filterProducts = filterProducts.filter(
-                    (product) => product.categoryID === state.sortId
-                );
-            }
-
-            if (state.sortColor > 0) {
-
-                filterProducts = filterProducts.filter(
-                    (product) => product.colorID.indexOf(state.sortColor) != -1
-                );
-            }
-
-            return filterProducts;
-        },
-        product(state, getters) {
-            const offset = (state.page - 1) * state.productShow;
-            return getters.sortProducts.slice(offset, offset + state.productShow);
-        },
-        getAllPages(state, getters) {
-            return getters.sortProducts.length;
-        },
-        colorProductsItem: (state) => (product) => {
-            let productColor = product.colorID;
-
-            return state.arrColors.filter(
-                (color) => productColor.indexOf(color.colorId) != -1
-            );
-        },
-    },
     mutations: {
         setPage(state, page) {
             state.page = page
+        },
+        setAllPage(state, allPage) {
+            state.allPage = allPage
+        },
+        setProducts(state, products) {
+            state.products = products
+        },
+        setListColor(state, listColor) {
+            state.listColor = listColor
+        },
+        setListSort(state, listSort) {
+            state.listSort = listSort
         },
         setPriceMin(state, priceMin) {
             state.priceMin = priceMin
@@ -78,6 +50,38 @@ export const catalogStore = {
         },
         setSortColor(state, sortColor) {
             state.sortColor = sortColor
+        },
+    },
+    actions: {
+        //получения товаров
+        getProducts(context) {
+            this.state.product.loadingProduct = true;
+
+            return axios
+                .get(store_URL + 'products', {
+                    params: {
+                        //старт страница и колличества строница 
+                        page: this.state.product.page,
+                        limit: this.state.product.productShow,
+                        //сортировка
+                        categoryId: this.state.product.sortId,
+                        colorId: this.state.product.sortColor,
+                        minPrice: this.state.product.priceMin,
+                        maxPrice: this.state.product.priceMax,
+                    }
+                })
+                .catch(() => {
+                    this.state.product.loadingProductError = true;
+                })
+                .then(response => {
+                    this.state.product.loadingProduct = false;
+
+                    if (response.status > 199 && response.status < 300) {
+                        context.commit('setProducts', response.data.items);
+                        context.commit('setAllPage', response.data.pagination.pages);
+                        this.state.product.loadingProductError = false;
+                    }
+                })
         },
     },
     namespaced: true,

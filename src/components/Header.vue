@@ -43,7 +43,7 @@ export default {
     },
     computed: {
         ...mapState({
-            goods: (state) => state.basket.goodsArr,
+            goods: (state) => state.basket.basket,
         }),
     },
 };

@@ -31,12 +31,12 @@
                     <ul class="cart__list">
                         <li
                             class="cart__item product"
-                            v-for="item in goods"
-                            :key="item.id"
+                            v-for="item in goodsArr"
+                            :key="item.product.id"
                         >
                             <div class="product__pic">
                                 <img
-                                    :src="item.img"
+                                    :src="item.product.image.file.url"
                                     width="120"
                                     height="120"
                                     srcset="img/phone-square-3@2x.jpg 2x"
@@ -45,13 +45,13 @@
                             </div>
 
                             <h3 class="product__title">
-                                {{ item.title }}
+                                {{ item.product.title }}
                             </h3>
                             <p class="product__info">
                                 Объем: <span>128GB</span>
                             </p>
                             <span class="product__code">
-                                Артикул: {{ item.id }}
+                                Артикул: {{ item.product.id }}
                             </span>
 
                             <div class="product__counter form__counter">
@@ -69,10 +69,7 @@
                                     </svg>
                                 </button>
 
-                                <input
-                                    type="text"
-                                    :value="item.quantityOfGoods"
-                                />
+                                <input type="text" :value="item.quantity" />
 
                                 <button
                                     type="button"
@@ -92,7 +89,7 @@
                             <b class="product__price">
                                 {{
                                     $filters.numberFormat(
-                                        item.quantityOfGoods * item.price
+                                        item.quantity * item.price
                                     )
                                 }}
                                 ₽
@@ -139,6 +136,8 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+import axios from "axios";
+import { store_URL } from "@/axiosURL";
 
 export default {
     components: {
@@ -146,55 +145,66 @@ export default {
         Footer,
     },
     data() {
-        return {
-            remove: {},
-        };
+        return {};
     },
     methods: {
         incrementGoods(item) {
-            item.quantityOfGoods += 1;
+            item.quantity += 1;
+            this.quantityСhanges(item);
         },
         decrementGoods(item) {
-            if (item.quantityOfGoods > 1) {
-                item.quantityOfGoods -= 1;
+            if (item.quantity > 1) {
+                item.quantity -= 1;
+                this.quantityСhanges(item);
             }
         },
-        removeGoods(item) {
-            this.remove = item;
+
+        quantityСhanges(item) {
+            axios({
+                method: "PUT",
+                url: store_URL + "baskets/products",
+                data: {
+                    quantity: String(item.quantity),
+                    productId: String(item.product.id),
+                },
+                params: {
+                    userAccessKey: this.accessKey,
+                },
+            }).then(() => {
+                this.reloadBaskets();
+            });
         },
 
-        ...mapMutations({
-            removeGoods: "basket/removeGoods",
+        removeGoods(item) {
+            axios({
+                method: "DELETE",
+                url: store_URL + "baskets/products",
+                data: {
+                    productId: item.product.id,
+                },
+                params: {
+                    userAccessKey: this.accessKey,
+                },
+            }).then(() => {
+                this.reloadBaskets();
+            });
+        },
+
+        ...mapActions({
+            reloadBaskets: "basket/loadingAccessKeyBasket",
         }),
     },
 
     computed: {
         ...mapState({
-            goodsArr: (state) => state.basket.goodsArr,
-            products: (state) => state.product.products,
+            goodsArr: (state) => state.basket.basket,
+            accessKey: (state) => state.basket.userAccessKey,
         }),
-
-        goods() {
-            const goodsArr = this.goodsArr;
-
-            let arrProduct = [];
-
-            this.products.map((item) => {
-                goodsArr.map((itemBasket) => {
-                    if (item.id == itemBasket.id) {
-                        item.quantityOfGoods = itemBasket.number;
-                        arrProduct.push(item);
-                    }
-                });
-            });
-
-            return arrProduct;
-        },
 
         fullPrice() {
             let fullPrice = 0;
-            this.goods.map((item) => {
-                fullPrice += item.quantityOfGoods * item.price;
+            this.goodsArr.map((item) => {
+                fullPrice += item.quantity * item.product.price;
             });
             return fullPrice;
         },

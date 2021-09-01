@@ -1,6 +1,7 @@
 <template>
     <Header></Header>
-    <main class="content container">
+    <div v-if="goods == null">идет загрузка ...</div>
+    <main v-else class="content container">
         <div class="content__top">
             <ul class="breadcrumbs">
                 <li class="breadcrumbs__item">
@@ -16,12 +17,12 @@
                         class="breadcrumbs__link"
                         :to="{ name: 'main' }"
                     >
-                        {{ category }}
+                        {{ goods.category.title }}
                     </router-link>
                 </li>
                 <li class="breadcrumbs__item">
                     <a class="breadcrumbs__link">
-                        {{ searcProduct().title }}
+                        {{ goods.title }}
                     </a>
                 </li>
             </ul>
@@ -34,15 +35,15 @@
                         v-if="startImg == 0"
                         width="570"
                         height="570"
-                        :src="'/' + searcProduct().img"
-                        :alt="searcProduct().title"
+                        :src="goods.image.file.url"
+                        :alt="goods.title"
                     />
                     <img
                         v-else
                         width="570"
                         height="570"
-                        :src="'/' + searcProduct().otherAngles[startImg - 1]"
-                        :alt="searcProduct().title"
+                        :src="goods.image.file.url"
+                        :alt="goods.title"
                     />
                 </div>
                 <ul class="pics__list">
@@ -59,12 +60,12 @@
                             <img
                                 width="98"
                                 height="98"
-                                :src="'/' + searcProduct().img"
-                                :alt="searcProduct().title"
+                                :src="goods.image.file.url"
+                                :alt="goods.title"
                             />
                         </a>
                     </li>
-                    <li
+                    <!-- <li
                         class="pics__item"
                         v-for="(img, i) in searcProduct().otherAngles"
                         :key="i + 1"
@@ -85,7 +86,7 @@
                                 :alt="searcProduct().title"
                             />
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
 
@@ -93,7 +94,7 @@
                 <span class="item__code" @click="searcProduct"
                     >Артикул: {{ $route.params.id }}</span
                 >
-                <h2 class="item__title">{{ searcProduct().title }}</h2>
+                <h2 class="item__title">{{ goods.title }}</h2>
                 <div class="item__form">
                     <form
                         class="form"
@@ -102,7 +103,7 @@
                         @submit.prevent="submitGoods"
                     >
                         <b class="item__price">
-                            {{ $filters.numberFormat(searcProduct().price) }} ₽
+                            {{ $filters.numberFormat(goods.price) }} ₽
                         </b>
 
                         <fieldset class="form__block">
@@ -110,10 +111,8 @@
                             <ul class="colors">
                                 <li
                                     class="colors__item"
-                                    v-for="(color, i) in colorProducts(
-                                        searcProduct()
-                                    )"
-                                    :key="color.colorId"
+                                    v-for="(color, i) in goods.colors"
+                                    :key="color.id"
                                 >
                                     <label class="colors__label">
                                         <input
@@ -126,16 +125,16 @@
                                         <span
                                             class="colors__value"
                                             :style="{
-                                                backgroundColor:
-                                                    color.colorName,
+                                                backgroundColor: color.code,
                                             }"
+                                            :title="color.title"
                                         />
                                     </label>
                                 </li>
                             </ul>
                         </fieldset>
 
-                        <fieldset class="form__block">
+                        <!-- <fieldset class="form__block">
                             <legend class="form__legend">Объемб в ГБ:</legend>
 
                             <ul class="sizes sizes--primery">
@@ -176,7 +175,7 @@
                                     </label>
                                 </li>
                             </ul>
-                        </fieldset>
+                        </fieldset> -->
 
                         <div class="item__row">
                             <div class="form__counter">
@@ -291,9 +290,11 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
-import sorts from "@/data/sort";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import axios from "axios";
+import { store_URL } from "@/axiosURL.js";
+
 export default {
     components: {
         Header,
@@ -304,17 +305,13 @@ export default {
             startColor: 0,
             startImg: 0,
             quantityOfGoods: 1,
+            goods: null,
         };
     },
     methods: {
-        searcProduct() {
-            const productID = this.$route.params.id;
-            const product = this.allProducts.filter(
-                (product) => product.id == productID
-            );
-
-            return product[0];
-        },
+        ...mapActions({
+            reloadBaskets: "basket/loadingAccessKeyBasket",
+        }),
 
         switchPictures(e) {
             const val = Number(e.currentTarget.getAttribute("value"));
@@ -329,34 +326,51 @@ export default {
             if (this.quantityOfGoods > 1) this.quantityOfGoods -= 1;
         },
 
-        ...mapMutations({
-            addGoods: "basket/setGoodsArr",
-        }),
-
         submitGoods() {
-            const goods = {
-                id: Number(this.$route.params.id),
-                number: this.quantityOfGoods,
-            };
+            let methods = "POST";
 
-            this.addGoods(goods);
+            let checkBasketLength = this.basket
+                .map((el) => {
+                    if (el.product.id == this.$route.params.id) {
+                        return el;
+                    }
+                })
+                .filter((el) => typeof el !== "undefined").length;
+
+            if (checkBasketLength > 0) {
+                methods = "PUT";
+            } else {
+                methods = "POST";
+            }
+
+            axios({
+                method: methods,
+                url: store_URL + "baskets/products",
+                data: {
+                    quantity: String(this.quantityOfGoods),
+                    productId: this.$route.params.id,
+                },
+                params: {
+                    userAccessKey: this.accessKey,
+                },
+            }).then(() => {
+                this.reloadBaskets();
+            });
         },
     },
     computed: {
         ...mapState({
-            allProducts: (state) => state.product.products,
+            accessKey: (state) => state.basket.userAccessKey,
+            basket: (state) => state.basket.basket,
         }),
+    },
 
-        category() {
-            const product = this.searcProduct();
-            const productCategory = sorts.filter(
-                (sort) => sort.id === product.categoryID
-            );
-            return productCategory[0].title;
-        },
-        ...mapGetters({
-            colorProducts: "product/colorProductsItem",
-        }),
+    mounted() {
+        axios
+            .get(store_URL + `products/${this.$route.params.id}`)
+            .then((reponse) => {
+                this.goods = reponse.data;
+            });
     },
 };
 </script>

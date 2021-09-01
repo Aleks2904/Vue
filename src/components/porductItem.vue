@@ -4,7 +4,7 @@
             :to="{ name: 'product', params: { id: product.id } }"
             class="catalog__pic"
         >
-            <img :src="product.img" :alt="product.title" />
+            <img :src="product.image.file.url" :alt="product.title" />
         </router-link>
 
         <router-link :to="{ name: 'product', params: { id: product.id } }">
@@ -20,8 +20,8 @@
         <ul class="colors colors--black">
             <li
                 class="colors__item"
-                v-for="(color, i) in colorProducts(product)"
-                :key="color.colorId"
+                v-for="(color, i) in product.colors"
+                :key="color.id"
             >
                 <label class="colors__label">
                     <input
@@ -33,7 +33,8 @@
 
                     <span
                         class="colors__value"
-                        :style="{ backgroundColor: color.colorName }"
+                        :title="color.title"
+                        :style="{ backgroundColor: color.code }"
                     />
                 </label>
             </li>
@@ -42,19 +43,12 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
-
 export default {
     props: ["product"],
     data() {
         return {
             startColor: 0,
         };
-    },
-    computed: {
-        ...mapGetters({
-            colorProducts: "product/colorProductsItem",
-        }),
     },
 };
 </script>

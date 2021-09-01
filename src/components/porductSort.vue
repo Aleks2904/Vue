@@ -38,7 +38,7 @@
                     >
                         <option value="0">Все категории</option>
                         <option
-                            v-for="sorts in sort"
+                            v-for="sorts in sortList"
                             :key="sorts.id"
                             :value="sorts.id"
                         >
@@ -53,19 +53,20 @@
                 <ul class="colors">
                     <li
                         class="colors__item"
-                        v-for="color in arrColors"
+                        v-for="color in colorsList"
                         :key="color.colorId"
                     >
                         <label class="colors__label">
                             <input
                                 class="colors__radio sr-only"
                                 type="radio"
-                                :value="color.colorId"
+                                :value="color.id"
                                 v-model="colors"
                             />
                             <span
                                 class="colors__value"
-                                :style="{ backgroundColor: color.colorName }"
+                                :style="{ backgroundColor: color.code }"
+                                :title="color.title"
                             >
                             </span>
                         </label>
@@ -180,8 +181,9 @@
 </template>
 
 <script>
-import sorts from "@/data/sort";
 import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+import axios from "axios";
+import { store_URL } from "@/axiosURL.js";
 
 export default {
     data() {
@@ -190,20 +192,10 @@ export default {
             dataPriceMin: 0,
             dataPriceMax: 0,
             colors: 0,
-        };
-    },
-    computed: {
-        sort() {
-            return sorts;
-        },
 
-        ...mapState({
-            priceMin: (state) => state.product.priceMin,
-            priceMax: (state) => state.product.priceMax,
-            sortId: (state) => state.product.sortId,
-            sortColor: (state) => state.product.sortColor,
-            arrColors: (state) => state.product.arrColors,
-        }),
+            colorsList: null,
+            sortList: null,
+        };
     },
     watch: {
         priceMin(value) {
@@ -220,25 +212,42 @@ export default {
         },
     },
     methods: {
-        submit() {
-            this.setPriceMin(this.dataPriceMin);
-            this.setPriceMax(this.dataPriceMax);
-            this.setSortId(this.dataSortID);
-            this.setSortColor(this.colors);
-        },
-        reset() {
-            this.setPriceMin(0);
-            this.setPriceMax(0);
-            this.setSortId(0);
-            this.setSortColor(0);
-        },
-
         ...mapMutations({
             setPriceMin: "product/setPriceMin",
             setPriceMax: "product/setPriceMax",
             setSortId: "product/setSortId",
             setSortColor: "product/setSortColor",
         }),
+        ...mapActions({
+            lodingProducts: "product/getProducts",
+        }),
+        submit() {
+            this.setPriceMin(this.dataPriceMin);
+            this.setPriceMax(this.dataPriceMax);
+            this.setSortId(this.dataSortID);
+            this.setSortColor(this.colors);
+            this.lodingProducts();
+        },
+        reset() {
+            this.dataPriceMin = 0;
+            this.dataPriceMax = 0;
+            this.dataSortID = 0;
+            this.colors = 0;
+
+            this.submit();
+        },
+    },
+    mounted() {
+        //получения списка котегорий товаров
+        axios.get(store_URL + "productCategories").then((response) => {
+            this.sortList = response.data.items;
+        });
+
+        //получения списка цветов для сортировки товаров
+
+        axios.get(store_URL + "colors").then((response) => {
+            this.colorsList = response.data.items;
+        });
     },
 };
 </script>

@@ -18,7 +18,7 @@
 
         <li
             class="pagination__item"
-            v-for="numberPage in itemPagitaion"
+            v-for="numberPage in allPage"
             :key="numberPage"
         >
             <a
@@ -72,18 +72,19 @@ export default {
         ...mapMutations({
             pageMutations: "product/setPage",
         }),
+        ...mapActions({
+            getProducts: "product/getProducts",
+        }),
     },
     computed: {
         ...mapState({
-            itemShow: (state) => state.product.productShow,
+            allPage: (state) => state.product.allPage,
             page: (state) => state.product.page,
         }),
-        ...mapGetters({
-            pageAll: "product/getAllPages",
-        }),
-
-        itemPagitaion() {
-            return Math.ceil(this.pageAll / this.itemShow);
+    },
+    watch: {
+        page() {
+            this.getProducts();
         },
     },
 };
