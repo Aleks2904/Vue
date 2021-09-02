@@ -119,12 +119,13 @@
                         <span>{{ $filters.numberFormat(fullPrice) }} ₽</span>
                     </p>
 
-                    <button
+                    <router-link
+                        :to="{ name: 'order' }"
                         class="cart__button button button--primery"
                         type="submit"
                     >
                         Оформить заказ
-                    </button>
+                    </router-link>
                 </div>
             </form>
         </section>

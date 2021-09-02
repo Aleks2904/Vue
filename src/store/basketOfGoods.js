@@ -7,7 +7,17 @@ export const basketOfGoods = {
     state: () => ({
         userAccessKey: null,
         basket: [],
+        orderData: [],
     }),
+    mutations: {
+        resetBasket(state, basket) {
+            state.basket = basket;
+        },
+
+        setOrederData(state, orderData) {
+            state.orderData = orderData;
+        }
+    },
     actions: {
         loadingAccessKeyBasket(context) {
             const accessKey = localStorage.getItem('userKey');
