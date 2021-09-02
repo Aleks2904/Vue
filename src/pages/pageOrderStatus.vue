@@ -14,7 +14,9 @@
                 </li>
             </ul>
 
-            <h1 class="content__title">Заказ оформлен <span>№ 23621</span></h1>
+            <h1 class="content__title">
+                Заказ оформлен <span>№ {{ dataStatus.id }}</span>
+            </h1>
         </div>
 
         <section class="cart">
@@ -31,7 +33,7 @@
                         <li class="dictionary__item">
                             <span class="dictionary__key"> Получатель </span>
                             <span class="dictionary__value">
-                                Иванова Василиса Алексеевна
+                                {{ dataStatus.name }}
                             </span>
                         </li>
                         <li class="dictionary__item">
@@ -39,19 +41,19 @@
                                 Адрес доставки
                             </span>
                             <span class="dictionary__value">
-                                Москва, ул. Ленина, 21, кв. 33
+                                {{ dataStatus.address }}
                             </span>
                         </li>
                         <li class="dictionary__item">
                             <span class="dictionary__key"> Телефон </span>
                             <span class="dictionary__value">
-                                8 800 989 74 84
+                                {{ dataStatus.phone }}
                             </span>
                         </li>
                         <li class="dictionary__item">
                             <span class="dictionary__key"> Email </span>
                             <span class="dictionary__value">
-                                lalala@mail.ru
+                                {{ dataStatus.email }}
                             </span>
                         </li>
                         <li class="dictionary__item">
@@ -65,31 +67,41 @@
 
                 <div class="cart__block">
                     <ul class="cart__orders">
-                        <li class="cart__order">
-                            <h3>Смартфон Xiaomi Redmi Note 7 Pro 6/128GB</h3>
-                            <b>18 990 ₽</b>
-                            <span>Артикул: 150030</span>
-                        </li>
-                        <li class="cart__order">
-                            <h3>Гироскутер Razor Hovertrax 2.0ii</h3>
-                            <b>4 990 ₽</b>
-                            <span>Артикул: 150030</span>
-                        </li>
-                        <li class="cart__order">
-                            <h3>Электрический дрифт-карт Razor Lil’ Crazy</h3>
-                            <b>8 990 ₽</b>
-                            <span>Артикул: 150030</span>
+                        <li
+                            class="cart__order"
+                            v-for="item in dataStatus.basket.items"
+                            :key="item.id"
+                        >
+                            <h3>{{ item.product.title }}</h3>
+                            <b
+                                >{{
+                                    $filters.numberFormat(item.product.price)
+                                }}
+                                ₽</b
+                            >
+                            <span>Артикул: {{ item.product.id }}</span>
                         </li>
                     </ul>
 
                     <div class="cart__total">
                         <p>Доставка: <b>500 ₽</b></p>
-                        <p>Итого: <b>3</b> товара на сумму <b>37 970 ₽</b></p>
+                        <p>
+                            Итого:
+                            <b>{{ dataStatus.basket.items.length }}</b> товара
+                            на сумму
+                            <b
+                                >{{
+                                    $filters.numberFormat(dataStatus.totalPrice)
+                                }}
+                                ₽</b
+                            >
+                        </p>
                     </div>
                 </div>
             </form>
         </section>
     </main>
+    -->
     <Footer></Footer>
 </template>
 
@@ -123,24 +135,27 @@ export default {
 
         checkDataStatus() {
             const idPage = this.$route.params.id;
-            console.log(idPage);
-            if (this.dataStatus.id === idPage) {
+            if (this.dataStatus.id && this.dataStatus.id === idPage) {
                 return false;
             }
 
             axios({
                 method: "GET",
-                url: store_URL + "order" + idPage,
+                url: store_URL + "orders/" + idPage,
                 params: {
                     userAccessKey: this.accessKey,
                 },
-            }).then((response) => {
-                this.setOrederData(response.data);
-            });
+            })
+                .catch((err) => {
+                    consosle.log(err);
+                })
+                .then((response) => {
+                    this.setOrederData(response.data);
+                });
         },
     },
 
-    mounted() {
+    created() {
         this.checkDataStatus();
     },
 };
