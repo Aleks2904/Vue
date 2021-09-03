@@ -35,8 +35,7 @@
             <a
                 class="pagination__link pagination__link--arrow"
                 :class="{
-                    'pagination__link--disabled':
-                        this.itemPagitaion === this.page,
+                    'pagination__link--disabled': this.allPage === this.page,
                 }"
                 href="#"
                 aria-label="Следующая страница"
@@ -59,7 +58,7 @@ export default {
             this.pageMutations(page);
         },
         nextPage() {
-            if (this.itemPagitaion != this.page) {
+            if (this.allPage != this.page) {
                 this.pageMutations(this.page + 1);
             }
         },
