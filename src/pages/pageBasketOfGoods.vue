@@ -121,10 +121,16 @@
 
                     <router-link
                         :to="{ name: 'order' }"
-                        class="cart__button button button--primery"
-                        type="submit"
+                        v-slot="{ navigate }"
+                        custom
                     >
-                        Оформить заказ
+                        <button
+                            class="cart__button button button--primery"
+                            type="submit"
+                            @click="navigate"
+                        >
+                            Оформить заказ
+                        </button>
                     </router-link>
                 </div>
             </form>

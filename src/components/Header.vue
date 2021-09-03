@@ -5,7 +5,7 @@
 
             <router-link class="header__logo" :to="{ name: 'main' }">
                 <img
-                    src="/img/svg/logo-tech.svg"
+                    src="/vue-dist/img/svg/logo-tech.svg"
                     alt="Логотип интернет магазина Технозавррр"
                     width="190"
                     height="33"
@@ -19,7 +19,6 @@
             <router-link
                 :to="{ name: 'basket' }"
                 class="header__cart"
-                href="cart.html"
                 aria-label="Корзина с
                 товарами"
             >
@@ -36,6 +35,7 @@
 
 <script>
 import { mapState, mapGetters, mapActions, mapMutations } from "vuex";
+// import logoTech from "../../public/img/svg/logo-tech.svg";
 
 export default {
     setup() {
